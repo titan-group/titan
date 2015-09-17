@@ -4,36 +4,20 @@ import (
 	"github.com/astaxie/beego"
 )
 
+type baseController struct {
+	beego.Controller
+}
+
+func (this *baseController) Prepare() {
+	//TODO
+}
+
 type MainController struct {
-	beego.Controller
+	baseController
 }
 
-type CreateImage struct {
-	beego.Controller
-}
-
-type OnlineAll struct {
-	beego.Controller
-}
-
-func (c *MainController) Get() {
-	c.Data["Website"] = "beego.me"
-	c.Data["Email"] = "astaxie@gmail.com"
-	c.TplNames = "index.tpl"
-}
-
-func (this *CreateImage) Get() {
-	jsoninfo := this.GetString("json")
-	if jsoninfo == "" {
-		this.Ctx.WriteString("json is empty")
-		return
-	} else {
-		this.Ctx.WriteString(jsoninfo)
-		return
-	}
-	
-func (this *OnlineAll) Get() {
-	//TODO online deploy
-}
-	
+func (this *MainController) Get() {
+	this.Data["Website"] = "beego.me"
+	this.Data["Email"] = "astaxie@gmail.com"
+	this.TplNames = "index.tpl"
 }

@@ -11,9 +11,11 @@ func init() {
 	    //API
 	    beego.NewNamespace("/api",
 		    // /api/createImage
-		    beego.NSRouter("/createImage", &controllers.CreateImage{}),
+		    beego.NSRouter("/createImage", &controllers.ApiController{}, "post:CreateImage"),
+			// /api/existsImage
+			beego.NSRouter("/existsImage", &controllers.ApiController{}, "post:ExistsImage"),
 			// /api/onlineAll
-			beego.NSRouter("/onlineAll", &controllers.OnlineAll{}),
+			beego.NSRouter("/onlineAll", &controllers.ApiController{}, "get:OnlineAll"),
 		)
 		
 	beego.AddNamespace(ns)
