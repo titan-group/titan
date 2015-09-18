@@ -75,26 +75,29 @@ func createImage(info CreateImageInfo) {
 	return
 }
 
-func (this *ApiController) CreateImage() bool {
+func (this *ApiController) CreateImage() {
 	jsonInfo := this.GetString("json")
     beego.Info("[CreateImage]Get create info:", jsonInfo)
 	var createImageInfo CreateImageInfo
 	if jsonInfo == "" {
-		return false
+		this.Ctx.WriteString("ERROR")
+		return
 	} else {
 		if err := json.Unmarshal([]byte(jsonInfo), &createImageInfo); err == nil {
 			//TODO createe
 			go createImage(createImageInfo)
 		}
-		return true
+		this.Ctx.WriteString("SUCCESS")
+		return
 	}
 }
 
-func (this *ApiController) ExistsImage() bool {
+func (this *ApiController) ExistsImage() {
 	//TODO
-	return false
+	return
 }
 	
 func (this *ApiController) OnlineAll() {
 	//TODO online deploy
+	return
 }
