@@ -9,7 +9,7 @@ type baseController struct {
 }
 
 func (this *baseController) Prepare() {
-
+	
 }
 
 type MainController struct {
