@@ -55,12 +55,12 @@ func getContainerByIpAndImage(nodeIp, image string) ContainerInfo {
 	cmd.Stdout = &cmdout
 	err := cmd.Run()
 	if err != nil {
-		beego.Error("[DeployAll]Uable to get container info by remote api:", err)
+		beego.Error("[OnlineAll]Uable to get container info by remote api:", err)
 		return target
 	}
 	var containerList []ContainerInfo
 	if err = json.Unmarshal([]byte(cmdout.String()), &containerList); err != nil {
-		beego.Error("[DeployAll]Uable to get container info by remote api:", err)
+		beego.Error("[OnlineAll]Uable to get container info by remote api:", err)
     }
 	// get target container
 	for i:=0; i < len(containerList); i++ {
@@ -115,7 +115,7 @@ func createImage(info CreateImageInfo) {
 		return
 	}
 	//modify dockerfile to set prodCmd
-	prodCmd := "RUN "+info.ProdCmd+" ./tmp"
+	prodCmd := "RUN "+info.ProdCmd+" -P ./tmp"
 	prodCmd = strings.Replace(prodCmd, "/", "\\/",-1)
 	prodCmd = "s/#heresetprodCmd/"+prodCmd+"/g"
 	cmd = exec.Command("sed", "-i", "-e", prodCmd, "./Dockerfile")
@@ -179,13 +179,13 @@ func singleDeploy(nodeIp, image string) {
 	}
 	// begin deploy
 	// stop old container
-	cmdString := "curl -v --raw -X POST http://"+nodeIp+"/containers/"+containerInfo.Id+"/stop?t=5"
+	cmdString := "curl -v --raw -X POST http://"+nodeIp+":"+dockremoteport+"/containers/"+containerInfo.Id+"/stop?t=5"
 	in := bytes.NewBuffer(nil)
 	cmd := exec.Command("/bin/bash")
 	cmd.Stdin = in
 	in.WriteString(cmdString)
 	if err := cmd.Run(); err != nil {
-		beego.Error("[DeployAll]Uable to stop container:", err)
+		beego.Error("[OnlineAll]Uable to stop container:", err)
 	}
 	return
 }
@@ -193,6 +193,7 @@ func singleDeploy(nodeIp, image string) {
 func (this *ApiController) OnlineAll() {
 	agileId := this.GetString("agileId")
 	module := this.GetString("module")
+	beego.Info("[OnlineAll]Get online info:", agileId+"@"+module)
 	// tag latest
 	image := dockerregistory+module
 	cmd := exec.Command("docker", "tag", "-f", image+":"+agileId, image+":latest")
@@ -216,5 +217,6 @@ func (this *ApiController) OnlineAll() {
 	agileCB.Status = "TRUE"
 	agileCB.Message = "SUCCESS"
 	agileCallBack("onlineAll", agileCB)
+	this.Ctx.WriteString("SUCCESS")
 	return
 }
