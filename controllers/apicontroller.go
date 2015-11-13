@@ -76,7 +76,7 @@ func agileCallBack(url string, agileCB AgileCallBackInfo) {
 	if jsonString, err := json.Marshal(agileCB); err == nil {
 		postUrl := agileCBUrl+"/"+url
 		beego.Info("[AgileCallBack]Callback info:", url+"-"+string(jsonString))
-		resp, postErr := http.Post(postUrl, "application/x-www-form-urlencoded", strings.NewReader(string(jsonString)))
+		resp, postErr := http.Post(postUrl, "application/json/raw", strings.NewReader(string(jsonString)))
 		defer resp.Body.Close()
 		if postErr != nil {
 			beego.Error("[AgileCallBack]Callback info:", postErr)
