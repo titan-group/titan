@@ -36,9 +36,9 @@ type ContainerInfo struct {
 }
 
 type AgileCallBackInfo struct {
-	agileId string
-	status string
-	message string
+	AgileId string `json:"agileId"`
+	Status string `json:"status"`
+	Message string `json:"message"`
 }
 
 func pushImage(image string) error {
@@ -88,14 +88,14 @@ func agileCallBack(url string, agileCB AgileCallBackInfo) {
 
 func createImage(info CreateImageInfo) {
 	var agileCB AgileCallBackInfo
-	agileCB.agileId = info.AgileId
-	agileCB.status = "FALSE"
+	agileCB.AgileId = info.AgileId
+	agileCB.Status = "FALSE"
 	// create workspace /home/titan/images/create/100000
 	workspace := titanws+"/images/create/"+info.AgileId
 	err := os.MkdirAll(workspace, 0755)
 	if err != nil {
 		beego.Error("[CreateImage]Uable to create dir:", workspace)
-		agileCB.message = "[CreateImage]Uable to create dir:"+workspace
+		agileCB.Message = "[CreateImage]Uable to create dir:"+workspace
 		agileCallBack("createImage", agileCB)
 		return
 	}
@@ -103,7 +103,7 @@ func createImage(info CreateImageInfo) {
 	err = os.Chdir(workspace)
 	if err != nil {
 		beego.Error("[CreateImage]Uable to cd dir:", workspace)
-		agileCB.message = "[CreateImage]Uable to cd dir:"+workspace
+		agileCB.Message = "[CreateImage]Uable to cd dir:"+workspace
 		agileCallBack("createImage", agileCB)
 		return
 	}
@@ -114,7 +114,7 @@ func createImage(info CreateImageInfo) {
 	err = cmd.Run()
 	if err != nil {
 		beego.Error("[CreateImage]Uable to get dockerfile:", dockerfilePath)
-		agileCB.message = "[CreateImage]Uable to get dockerfile:"+dockerfilePath
+		agileCB.Message = "[CreateImage]Uable to get dockerfile:"+dockerfilePath
 		agileCallBack("createImage", agileCB)
 		return
 	}
@@ -126,7 +126,7 @@ func createImage(info CreateImageInfo) {
 	err = cmd.Run()
 	if err != nil {
 		beego.Error("[CreateImage]Uable to modify dockerfile:", prodCmd)
-		agileCB.message = "[CreateImage]Uable to modify dockerfile:"+prodCmd
+		agileCB.Message = "[CreateImage]Uable to modify dockerfile:"+prodCmd
 		agileCallBack("createImage", agileCB)
 		return
 	}
@@ -136,7 +136,7 @@ func createImage(info CreateImageInfo) {
 	err = cmd.Run()
 	if err != nil {
 		beego.Error("[CreateImage]Uable to create image by dockerfile:", err)
-		agileCB.message = "[CreateImage]Uable to create image by dockerfile"
+		agileCB.Message = "[CreateImage]Uable to create image by dockerfile"
 		agileCallBack("createImage", agileCB)
 		return
 	}
@@ -144,13 +144,13 @@ func createImage(info CreateImageInfo) {
 	err = pushImage(image)
 	if err != nil {
 		beego.Error("[CreateImage]Uable to push image:", err)
-		agileCB.message = "[CreateImage]Uable to push image"
+		agileCB.Message = "[CreateImage]Uable to push image"
 		agileCallBack("createImage", agileCB)
 		return
 	}
 	beego.Info("[CreateImage]SUCCESS:", image)
-	agileCB.message = "SUCCESS"
-	agileCB.status = "TRUE"
+	agileCB.Message = "SUCCESS"
+	agileCB.Status = "TRUE"
 	agileCallBack("createImage", agileCB)
 	return
 }
@@ -217,9 +217,9 @@ func (this *ApiController) OnlineAll() {
 		time.Sleep(20 * time.Second)
 	}
 	var agileCB AgileCallBackInfo
-	agileCB.agileId = agileId
-	agileCB.status = "TRUE"
-	agileCB.message = "SUCCESS"
+	agileCB.AgileId = agileId
+	agileCB.Status = "TRUE"
+	agileCB.Message = "SUCCESS"
 	agileCallBack("onlineAll", agileCB)
 	this.Ctx.WriteString("SUCCESS")
 	return
